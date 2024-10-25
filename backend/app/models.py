@@ -7,5 +7,5 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False)
-    description = Column(String)
-    is_completed = Column(Integer, default=0) 
+    description = Column(String(255)) 
+    is_completed = Column(Integer, default=0)
