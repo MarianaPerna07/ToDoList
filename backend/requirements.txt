@@ -3,5 +3,11 @@ uvicorn[standard]==0.22.0
 python-dotenv==1.0.0
 aiomysql==0.0.22
 tortoise-orm==0.19.3
-SQLAlchemy==1.4.50
+SQLAlchemy
 pydantic
+pytest
+pymysql
+cryptography
+python-jose
+requests
+pytest-cov
