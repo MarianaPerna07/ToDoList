@@ -1,15 +1,33 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
-class TaskCreate(BaseModel):
-    title: str
-    description: Optional[str] = None
+class UserBase(BaseModel):
+    cognito_id: str
+    given_name: str
+    family_name: str
+    email: str
 
-class Task(BaseModel):
+class UserCreate(UserBase):
+    pass
+
+class User(UserBase):
     id: int
-    title: str
-    description: Optional[str] = None
-    is_completed: int
+    tasks: List['Task'] = []
 
     class Config:
-        orm_mode = True 
+        orm_mode = True
+
+class TaskBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+class TaskCreate(TaskBase):
+    pass
+
+class Task(TaskBase):
+    id: int
+    is_completed: int
+    owner_id: int
+
+    class Config:
+        orm_mode = True
