@@ -9,5 +9,12 @@ pytest
 pymysql
 cryptography
 python-jose
+python-jose[cryptography]
 requests
 pytest-cov
+boto3
+botocore 
+awscli
+aws-lambda-powertools
+aws-xray-sdk
+mangum
