@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -23,6 +23,8 @@ class Task(Base):
     description = Column(String(255))
     is_completed = Column(Integer, default=0)
     owner_id = Column(Integer, ForeignKey('users.id'))
+    deadline = Column(DateTime, nullable=True)
+    priority = Column(String(50), nullable=True)
 
     owner = relationship("User", back_populates="tasks")
 
