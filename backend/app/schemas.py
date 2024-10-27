@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
+from datetime import datetime
 
 class UserBase(BaseModel):
     cognito_id: str
@@ -20,6 +21,8 @@ class User(UserBase):
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
+    deadline: Optional[datetime] = None
+    priority: Optional[str] = None
 
 class TaskCreate(TaskBase):
     pass
