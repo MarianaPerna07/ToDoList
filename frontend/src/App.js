@@ -1,39 +1,45 @@
+// App.js
+
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import { Amplify } from 'aws-amplify';
 import awsExports from './aws-exports';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { fetchAuthSession } from '@aws-amplify/auth';
+import TodoList from './components/TodoList';
+import { CssBaseline, Container, Typography, Box } from '@mui/material';
 
 Amplify.configure(awsExports);
 
 function App() {
   const [jwtToken, setJwtToken] = useState('');
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchJwtToken();
-  }, []);
-  
-  const fetchJwtToken = async () => {
-    try {
-      const session = await fetchAuthSession(); // chama fetchAuthSession diretamente
-      const token = session.tokens?.idToken?.toString();
-      setJwtToken(token);
-    } catch (error) {
-      console.log('Error fetching JWT token:', error);
+    const fetchJwtToken = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        setJwtToken(token);
+      } catch (error) {
+        console.log('Error fetching JWT token:', error);
+      }
+    };
+
+    if (user) {
+      fetchJwtToken();
     }
-  };
-  
+  }, [user]);
+
   return (
-    <Authenticator initialState='signIn'
+    <Authenticator
+      initialState="signIn"
       components={{
         SignUp: {
           FormFields() {
             return (
               <>
                 <Authenticator.SignUp.FormFields />
-                {/* Custom fields for given_name and family_name */}
                 <div><label>First name</label></div>
                 <input type="text" name="given_name" placeholder="Please enter your first name" />
                 <div><label>Last name</label></div>
@@ -59,14 +65,25 @@ function App() {
         },
       }}
     >
-      {({ signOut, user }) => (
-        <div>
-          Welcome {user.username}
-          <button onClick={signOut}>Sign out</button>
-          <h4>Your JWT token:</h4>
-          {jwtToken || "Token not available"}
-        </div>
-      )}
+      {({ signOut, user }) => {
+        setUser(user); // Set the user object for useEffect to trigger
+
+        return (
+          <CssBaseline>
+            <Container maxWidth="sm">
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom align="center">
+                  Welcome, {user.username}
+                </Typography>
+                <Box display="flex" justifyContent="flex-end">
+                  <button onClick={signOut}>Sign out</button>
+                </Box>
+                <TodoList jwtToken={jwtToken} />
+              </Box>
+            </Container>
+          </CssBaseline>
+        );
+      }}
     </Authenticator>
   );
 }

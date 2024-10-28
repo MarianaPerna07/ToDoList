@@ -36,3 +36,40 @@
     transform: rotate(360deg);
   }
 }
+
+.completed {
+  color: #888;
+}
+
+/* App.css */
+
+.todo-list {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.todo-item p {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.todo-item p.completed {
+  color: #888;
+  text-decoration: line-through;
+}
+
+input[type="text"] {
+  width: calc(100% - 50px);
+  padding: 5px;
+}
+
+button {
+  padding: 5px 10px;
+}
