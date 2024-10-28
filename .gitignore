@@ -45,6 +45,7 @@ amplifytools.xcconfig
 
 # Ignora arquivos do MySQL na pasta `backend/mysql_data`
 backend/mysql_data/
+backend/env/
 
 # Ignora arquivos e pastas específicas
 *.pem          # Ignora qualquer arquivo de chave .pem, como ca-key.pem
@@ -52,3 +53,4 @@ backend/mysql_data/
 
 # Ignores adicionais
 *.log          # Ignora todos os arquivos de log
+
