@@ -1,5 +1,3 @@
-// App.js
-
 import React, { useState, useEffect } from 'react';
 import { Amplify } from 'aws-amplify';
 import awsExports from './aws-exports';
@@ -11,25 +9,29 @@ import { CssBaseline, Container, Typography, Box } from '@mui/material';
 
 Amplify.configure(awsExports);
 
-function App() {
+const App = () => {
   const [jwtToken, setJwtToken] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchJwtToken = async () => {
-      try {
-        const session = await fetchAuthSession();
-        const token = session.tokens?.idToken?.toString();
-        setJwtToken(token);
-      } catch (error) {
-        console.log('Error fetching JWT token:', error);
-      }
-    };
-
     if (user) {
+      const fetchJwtToken = async () => {
+        try {
+          const session = await fetchAuthSession();
+          const token = session.tokens?.idToken?.toString();
+          setJwtToken(token);
+        } catch (error) {
+          console.log('Error fetching JWT token:', error);
+        }
+      };
       fetchJwtToken();
     }
   }, [user]);
+
+  const handleUserChange = (newUser) => {
+    if (newUser !== user) setUser(newUser);
+  };
+
 
   return (
     <Authenticator
@@ -66,8 +68,7 @@ function App() {
       }}
     >
       {({ signOut, user }) => {
-        setUser(user); // Set the user object for useEffect to trigger
-
+        handleUserChange(user); 
         return (
           <CssBaseline>
             <Container maxWidth="sm">
@@ -86,6 +87,6 @@ function App() {
       }}
     </Authenticator>
   );
-}
+};
 
 export default App;

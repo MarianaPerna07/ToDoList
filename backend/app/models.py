@@ -24,6 +24,7 @@ class Task(Base):
     is_completed = Column(Integer, default=0)
     owner_id = Column(Integer, ForeignKey('users.id'))
     deadline = Column(DateTime, nullable=True)
+    creation_date = Column(DateTime, nullable=False)
     priority = Column(String(50), nullable=True)
 
     owner = relationship("User", back_populates="tasks")

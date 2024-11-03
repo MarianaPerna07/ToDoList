@@ -7,8 +7,20 @@ from app.auth import get_current_user
 router = APIRouter()
 
 @router.post("/tasks/", response_model=schemas.Task, status_code=201)
-def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
-    return crud.create_task(db=db, title=task.title, description=task.description, user_id=current_user.id)
+def create_task(
+    task: schemas.TaskCreate,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user)
+):
+    return crud.create_task(
+        db=db,
+        title=task.title,
+        description=task.description,
+        user_id=current_user.id,
+        deadline=task.deadline,
+        priority=task.priority,
+        creation_date=task.creation_date
+    )
 
 @router.get("/tasks/", response_model=list[schemas.Task])
 def read_tasks(db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
@@ -20,10 +32,24 @@ def read_task(task_id: int, db: Session = Depends(get_db), current_user: schemas
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
-
 @router.put("/tasks/{task_id}/toggle", response_model=schemas.Task)
 def toggle_task_completion(task_id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
     task = crud.toggle_task_completion(db, task_id=task_id, user_id=current_user.id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
+
+@router.put("/tasks/{task_id}", response_model=schemas.Task)
+def update_task(
+    task_id: int,
+    task_update: schemas.TaskUpdate,
+    db: Session = Depends(get_db),
+    current_user: schemas.User = Depends(get_current_user),
+):
+    print(f"Updating task {task_id}")
+    task = crud.update_task(
+        db, task_id=task_id, user_id=current_user.id, task_update=task_update
+    )
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
