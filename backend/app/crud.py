@@ -30,6 +30,7 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
+# Função para criar tarefa
 def create_task(
     db: Session,
     title: str,
@@ -87,6 +88,7 @@ def update_task(db: Session, task_id: int, user_id: int, task_update: TaskUpdate
         task.description = task_update.description
     if task_update.deadline is not None:
         task.deadline = task_update.deadline
+    #  check if the priority is not None
     if task_update.priority is not None:
         task.priority = task_update.priority
 

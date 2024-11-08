@@ -145,7 +145,7 @@ function TodoList({ jwtToken }) {
         title,
         description,
         deadline: deadline ? deadline.toISOString() : null, // Converte para ISO
-        priority,
+        priority, // Adiciona a prioridade
       };
   
       console.log("Updating task with ID:", taskId);
@@ -251,7 +251,7 @@ function TodoList({ jwtToken }) {
     setTitle(task.title);
     setDescription(task.description);
     setDeadline(task.deadline ? new Date(task.deadline) : null); // Converte para Date se necessário
-    setPriority(task.priority || '');
+    setPriority(task.priority || ''); // Define a prioridade
   };
   
 
@@ -260,7 +260,7 @@ function TodoList({ jwtToken }) {
     setTitle('');
     setDescription('');
     setDeadline(null);
-    setPriority('');
+    setPriority(''); // Reset priority
     setEditTaskId(null);
   };
   
@@ -313,6 +313,7 @@ function TodoList({ jwtToken }) {
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
+              {/* Create a drop down menu to select the priority of the task */}
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Priority</InputLabel>
                 <Select
@@ -367,6 +368,7 @@ function TodoList({ jwtToken }) {
               <MenuItem value="pending">Pending</MenuItem>
             </Select>
           </FormControl>
+          {/* Create a drop down menu to filter the tasks by All, Low, Medium or High priority */}
           <FormControl fullWidth variant="outlined" style={{ marginTop: 10 }}>
             <InputLabel>Filter By Priority</InputLabel>
             <Select value={priorityFilter} onChange={handlePriorityFilterChange} label="Filter By Priority">

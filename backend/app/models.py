@@ -23,7 +23,7 @@ class Task(Base):
     description = Column(String(255))
     is_completed = Column(Integer, default=0)
     owner_id = Column(Integer, ForeignKey('users.id'))
-    deadline = Column(DateTime, nullable=True)
+    deadline = Column(DateTime, nullable=True) # deadline is optional
     creation_date = Column(DateTime, nullable=False)
     priority = Column(String(50), nullable=True)
 
