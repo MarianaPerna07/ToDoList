@@ -21,7 +21,7 @@ class User(UserBase):
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
-    deadline: Optional[datetime] = None
+    deadline: Optional[datetime] = None # deadline is optional
     creation_date: datetime
     priority: Optional[str] = None
 
@@ -31,7 +31,7 @@ class TaskCreate(TaskBase):
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    deadline: Optional[datetime] = None
+    deadline: Optional[datetime] = None # deadline is optional
     priority: Optional[str] = None
     is_completed: Optional[int] = None
 

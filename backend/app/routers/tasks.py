@@ -17,7 +17,7 @@ def create_task(
         title=task.title,
         description=task.description,
         user_id=current_user.id,
-        deadline=task.deadline,
+        deadline=task.deadline, # deadline is optional
         priority=task.priority,
         creation_date=task.creation_date
     )
