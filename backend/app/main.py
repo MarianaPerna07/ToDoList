@@ -15,10 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create tables in the database
 Base.metadata.create_all(bind=engine)
 
-# Include the router for task operations
 app.include_router(tasks.router)
 
 @app.get("/")

@@ -6,7 +6,7 @@ services:
     container_name: mysql-todolist
     environment:
       MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: todolist  # Alinha com o nome da base de dados que o backend vai usar
+      MYSQL_DATABASE: todolist  
       MYSQL_USER: mariana
       MYSQL_PASSWORD: 1234
     healthcheck:
@@ -19,7 +19,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      - backend_network  # Usa a mesma rede para ambos os serviços
+      - backend_network 
 
   backend:
     build:

@@ -22,10 +22,18 @@ class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
     deadline: Optional[datetime] = None
+    creation_date: datetime
     priority: Optional[str] = None
 
 class TaskCreate(TaskBase):
     pass
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    deadline: Optional[datetime] = None
+    priority: Optional[str] = None
+    is_completed: Optional[int] = None
 
 class Task(TaskBase):
     id: int
@@ -34,4 +42,6 @@ class Task(TaskBase):
 
     class Config:
         orm_mode = True
+
+
         
