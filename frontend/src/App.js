@@ -70,19 +70,43 @@ const App = () => {
       {({ signOut, user }) => {
         handleUserChange(user); 
         return (
-          <CssBaseline>
-            <Container maxWidth="sm">
-              <Box sx={{ mt: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom align="center">
-                  Welcome, {user.username}
-                </Typography>
-                <Box display="flex" justifyContent="flex-end">
-                  <button onClick={signOut}>Sign out</button>
+          <>
+            <CssBaseline />
+            <Box
+              sx={{
+                backgroundColor: '#6d6875',
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+              }}
+            >
+              <Container maxWidth="sm">
+                <Box sx={{ mt: 4 }}>
+                  <Typography variant="h4" component="h1" gutterBottom align="center" color="#ffcdb2">
+                    Welcome {user.username} 👋
+                  </Typography>
+                  <Box display="flex" justifyContent="flex-end" marginRight={3}>
+                    <button onClick={signOut}
+                    style={{
+                      backgroundColor: '#e3d5ca',
+                      color: '#9d8189',
+                      border: 'none',
+                      padding: '7px 12px',
+                      cursor: 'pointer',
+                      borderRadius: '7px',
+                      fontSize: '16px',
+                    }}
+                    
+                    >Sign out</button>
+                  </Box>
+                  <TodoList jwtToken={jwtToken} />
                 </Box>
-                <TodoList jwtToken={jwtToken} />
-              </Box>
-            </Container>
-          </CssBaseline>
+              </Container>
+            </Box>
+            {/* </CssBaseline> */}
+          </>
         );
       }}
     </Authenticator>

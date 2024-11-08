@@ -13,6 +13,8 @@ import {
   InputLabel,
   FormControl,
   Box,
+  Stack,
+  Divider,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -34,6 +36,7 @@ function TodoList({ jwtToken }) {
   const [editTaskId, setEditTaskId] = useState(null);
   const [sortOption, setSortOption] = useState('-creation_date');
   const [filterOption, setFilterOption] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
 
   useEffect(() => {
     if (jwtToken) {
@@ -41,18 +44,22 @@ function TodoList({ jwtToken }) {
     }
   }, [jwtToken]);
 
-  useEffect(() => {
-    if (baseTasks.length > 0) {
-      handleFilterChange({ target: { value: filterOption } });
-      handleSortChange({ target: { value: sortOption } });
-    }
-  }, [filterOption, baseTasks]);
+  // useEffect(() => {
+  //   if (baseTasks.length > 0) {
+  //     handleFilterChange({ target: { value: filterOption } });
+  //     handleSortChange({ target: { value: sortOption } });
+  //   }
+  // }, [filterOption, baseTasks]);
 
   useEffect(() => {
-    // Sort tasks whenever baseTasks or sortOption changes
-    const sortedTasks = sortTasks(baseTasks);
-    setTasks(sortedTasks);
-  }, [baseTasks, sortOption]);
+    applyCombinedFilters();
+  }, [filterOption, priorityFilter, baseTasks, sortOption]);
+
+  // useEffect(() => {
+  //   // Sort tasks whenever baseTasks or sortOption changes
+  //   const sortedTasks = sortTasks(baseTasks);
+  //   setTasks(sortedTasks);
+  // }, [baseTasks, sortOption]);
 
   const fetchTasks = async (token) => {
     try {
@@ -194,35 +201,47 @@ function TodoList({ jwtToken }) {
 
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
-    console.log("Sort option changed to:", event.target.value);
-
-    const sortedTasks = [...tasks].sort((a, b) => {
-      if (event.target.value === 'creation_date') {
-        return new Date(a.creation_date) - new Date(b.creation_date);
-      } else if (event.target.value === '-creation_date') {
-        return new Date(b.creation_date) - new Date(a.creation_date);
-      } else if (event.target.value === 'deadline_date') {
-        return new Date(a.deadline) - new Date(b.deadline);
-      } else if (event.target.value === '-deadline_date') {
-        return new Date(b.deadline) - new Date(a.deadline);
-      }
-    }
-    );
-    setTasks(sortedTasks);
   };
+
+  // const handleFilterChange = (event) => {
+  //   setFilterOption(event.target.value);
+  //   console.log("Filter option changed to:", event.target.value);
+  //   if (event.target.value === 'all') {
+  //     setTasks(baseTasks);
+  //   }
+  //   else if (event.target.value === 'completed') {
+  //     setTasks(baseTasks.filter((task) => task.is_completed));
+  //   }
+  //   else if (event.target.value === 'pending') {
+  //     setTasks(baseTasks.filter((task) => !task.is_completed));
+  //   }
+  // };
 
   const handleFilterChange = (event) => {
     setFilterOption(event.target.value);
-    console.log("Filter option changed to:", event.target.value);
-    if (event.target.value === 'all') {
-      setTasks(baseTasks);
+  };
+
+  const handlePriorityFilterChange = (event) => {
+    setPriorityFilter(event.target.value);
+  };
+
+  const applyCombinedFilters = () => {
+    let filteredTasks = [...baseTasks];
+
+    // Apply completion filter
+    if (filterOption === 'completed') {
+      filteredTasks = filteredTasks.filter((task) => task.is_completed);
+    } else if (filterOption === 'pending') {
+      filteredTasks = filteredTasks.filter((task) => !task.is_completed);
     }
-    else if (event.target.value === 'completed') {
-      setTasks(baseTasks.filter((task) => task.is_completed));
+
+    // Apply priority filter
+    if (priorityFilter !== 'all') {
+      filteredTasks = filteredTasks.filter((task) => task.priority === priorityFilter);
     }
-    else if (event.target.value === 'pending') {
-      setTasks(baseTasks.filter((task) => !task.is_completed));
-    }
+
+    const sortedFilteredTasks = sortTasks(filteredTasks);
+    setTasks(sortedFilteredTasks);
   };
 
   const startEditing = (task) => {
@@ -247,10 +266,17 @@ function TodoList({ jwtToken }) {
   
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box display="flex" flexDirection="column" alignItems="center" p={3} minHeight="100vh" bgcolor="#f0f2f5">
-        <Paper elevation={3} style={{ padding: 30, maxWidth: 600, width: '100%', borderRadius: '15px' }}>
-          <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold', color: '#1976d2' }}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}  adapterLocale={pt}>
+      <Box display="flex" flexDirection="column" alignItems="center" p={3} minHeight="100vh" bgcolor="#6d6875">
+        <Paper elevation={3} style={{ 
+          padding: 30, 
+          maxWidth: 600, 
+          width: '100%', 
+          borderRadius: '10px',
+          backgroundColor: '#f5ebe0',
+          boxShadow: '10px 10px 20px rgba(0, 0, 0, 0.35)',
+        }}>
+          <Typography variant="h4" gutterBottom align="center" style={{ fontWeight: 'bold', color: '#6d6875' }}>
             To-Do List
           </Typography>
           <Grid container spacing={2} alignItems="center">
@@ -273,8 +299,6 @@ function TodoList({ jwtToken }) {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {/* Update the datepicker to use the format  DD-MM-YYYY */}
-              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={pt}>
                 <DatePicker
                   label="Deadline"
                   value={deadline || null}
@@ -287,7 +311,6 @@ function TodoList({ jwtToken }) {
                     },
                   }}
                 />
-              </LocalizationProvider>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth variant="outlined">
@@ -311,7 +334,7 @@ function TodoList({ jwtToken }) {
                 onClick={addOrUpdateTask}
                 fullWidth
                 style={{
-                  backgroundColor: editTaskId ? '#d32f2f' : '#1976d2',
+                  backgroundColor: editTaskId ? '#e76f51' : '#6d6875',
                   color: '#ffffff',
                   padding: '10px 0',
                   borderRadius: '8px',
@@ -322,7 +345,7 @@ function TodoList({ jwtToken }) {
               </Button>
             </Grid>
           </Grid>
-          <Typography variant="h5" style={{ marginTop: 20, fontWeight: 'bold', color: '#333' }}>
+          <Typography variant="h5" style={{ marginTop: 20, fontWeight: 'bold', color: '#6d6875' }}>
             My Tasks
           </Typography>
           {/* Create a drop down menu to sort the tasks by Creation Date or Deadline Date (both ascending or descending) */}
@@ -337,67 +360,100 @@ function TodoList({ jwtToken }) {
           </FormControl>
           {/* Create a drop down menu to filter the tasks by All, Completed or Pending */}
           <FormControl fullWidth variant="outlined" style={{ marginTop: 10 }}>
-            <InputLabel>Filter By</InputLabel>
-            <Select value={filterOption} onChange={handleFilterChange} label="Filter By">
+            <InputLabel>Filter By Status</InputLabel>
+            <Select value={filterOption} onChange={handleFilterChange} label="Filter By Status">
               <MenuItem value="all">All</MenuItem>
               <MenuItem value="completed">Completed</MenuItem>
               <MenuItem value="pending">Pending</MenuItem>
             </Select>
           </FormControl>
-          {tasks.map((task) => (
-            <Paper
-              key={task.id}
-              elevation={1}
-              style={{
-                padding: 15,
-                marginTop: 10,
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: task.is_completed ? '#e3f2fd' : '#ffffff',
-                borderRadius: '10px',
-              }}
-            >
-              <Checkbox
-                checked={Boolean(task.is_completed)}
-                onChange={() => toggleCompleted(task.id)}
-                color="primary"
-              />
-              <Box flex={1}>
-                <Typography
-                  variant="h6"
-                  style={{
-                    textDecoration: task.is_completed ? 'line-through' : 'none',
-                    color: task.is_completed ? '#757575' : '#333',
-                    fontWeight: task.is_completed ? 'normal' : 'bold',
-                  }}
-                >
-                  {task.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {task.description}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {/* format Creation Date to DD-MM-YYYY withouth HH-MM-SS */}
-                  {task.deadline
-                    ? `Deadline: ${new Date(task.deadline).toLocaleString('pt-BR', { dateStyle: 'short' })}`
-                    : 'No deadline'}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {/* format Creation Date to DD-MM-YYYY HH-MM-SS as 24-hour format */}
-                  Creation Date: {new Date(task.creation_date).toLocaleString('pt-BR')}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Priority: {task.priority}
-                </Typography>
-              </Box>
-              <IconButton onClick={() => startEditing(task)}>
-                <EditIcon color="primary" />
-              </IconButton>
-              <IconButton onClick={() => deleteTask(task.id)}>
-                <DeleteIcon color="error" />
-              </IconButton>
-            </Paper>
-          ))}
+          <FormControl fullWidth variant="outlined" style={{ marginTop: 10 }}>
+            <InputLabel>Filter By Priority</InputLabel>
+            <Select value={priorityFilter} onChange={handlePriorityFilterChange} label="Filter By Priority">
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="High">High</MenuItem>
+            </Select>
+          </FormControl>
+          {tasks.length === 0 ? (
+            <Box textAlign="center" style={{ marginTop: 20 }}>
+            <Typography variant="h6" color="textSecondary">
+              No tasks to show 😔
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Add a new task or adjust your filters.
+            </Typography>
+          </Box>
+          ) : (
+            tasks.map((task) => (
+              <Paper
+                key={task.id}
+                elevation={1}
+                style={{
+                  padding: 15,
+                  marginTop: 25,
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: task.is_completed === 1 ? '#9d8189' : '#e3d5ca',
+                  borderRadius: '8px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.20)',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <Box flex={1} display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        textDecoration: task.is_completed ? 'line-through' : 'none',
+                        color: task.is_completed ? '#e3d5ca' : '#6d6875',
+                        fontWeight: task.is_completed ? 'normal' : 'bold',
+                        fontStyle: 'italic',
+                      }}
+                    >
+                      {task.title}
+                    </Typography>
+                    <Typography variant="body" style={{ color: task.is_completed ? '#e3d5ca' : '#6d6875' }}>
+                    • {task.description}
+                    </Typography>
+                  </Box>
+                 
+                  {/* <Divider sx={{ borderColor: task.is_completed ? '#e3d5ca' : '#6d6875', borderStyle: 'dashed', marginY: 1}}/> */}
+                  <Box display="flex" flexDirection="column-reverse" alignItems="flex-start" sx={{ mt: 3 }}>
+                    <Typography variant="caption" display="block" style={{ color: task.is_completed ? '#e3d5ca' : '#6d6875' }}>
+                      {/* format Creation Date to DD-MM-YYYY withouth HH-MM-SS */}
+                      {task.deadline
+                        ? `Deadline: ${new Date(task.deadline).toLocaleString('pt-BR', { dateStyle: 'short' })}`
+                        : 'No deadline'}
+                    </Typography>
+                    <Typography variant="caption" display="block" style={{ color: task.is_completed ? '#e3d5ca' : '#6d6875' }}>
+                      {/* format Creation Date to DD-MM-YYYY HH-MM-SS as 24-hour format */}
+                      Creation Date: {new Date(task.creation_date).toLocaleString('pt-BR')}
+                    </Typography>
+                    <Typography variant="caption"  display="block" style={{ color: task.is_completed ? '#e3d5ca' : '#6d6875' }}>
+                      Priority: {task.priority}
+                    </Typography>
+                  </Box>
+                </Box>
+
+
+                <Stack direction="column" spacing={0} alignItems="flex-start" style={{ marginRight: -10, marginLeft : 5 }}height="100%">
+                  <Checkbox
+                    checked={Boolean(task.is_completed)}
+                    onChange={() => toggleCompleted(task.id)}
+                    style={{ color: task.is_completed ? '#e3d5ca' : '#9d8189'}}
+                  />
+                  <IconButton onClick={() => startEditing(task)}>
+                    <EditIcon style={{ color: task.is_completed ? '#e3d5ca' : '#9d8189' }} />
+                  </IconButton>
+                  <IconButton onClick={() => deleteTask(task.id)}>
+                    <DeleteIcon style={{ color: '#e76f51' }} />
+                  </IconButton>
+                </Stack>
+              </Paper>
+            ))
+          )}
         </Paper>
       </Box>
     </LocalizationProvider>

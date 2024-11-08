@@ -21,7 +21,11 @@ function TodoItem({ task, deleteTask, toggleCompleted }) {
   };
 
   return (
-    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
+    <Paper elevation={1}  sx={{ 
+      p: 2, 
+      mb: 2,
+      backgroundColor: task.is_completed === 1 ? '#ffb4a2' : 'inherit',
+      }}>
       <Stack direction="row" alignItems="center" spacing={2}>
         <Checkbox
           checked={task.is_completed === 1}
