@@ -44,6 +44,7 @@ function TodoList({ jwtToken }) {
     }
   }, [jwtToken]);
 
+  // FILTROS FEITOS PELO FRONTEND
   // useEffect(() => {
   //   if (baseTasks.length > 0) {
   //     handleFilterChange({ target: { value: filterOption } });
