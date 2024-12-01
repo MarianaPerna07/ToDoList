@@ -1,4 +1,5 @@
 import time
+import os
 from jose import JWTError, jwk, jwt
 from jose.utils import base64url_decode
 from fastapi import Depends, HTTPException, status
@@ -10,9 +11,10 @@ from app import crud, schemas
 from app.database import get_db
 from sqlalchemy.orm import Session
 
-cognito_region = 'eu-north-1'
-user_pool_id = 'eu-north-1_eIhVOmDHZ'
-app_client_id = '16ik7dra6dp8kpnqk15usuhog4'
+# Load Cognito variables from environment
+cognito_region = os.getenv('AWS_REGION')
+user_pool_id = os.getenv('COGNITO_USERPOOL_ID')
+app_client_id = os.getenv('COGNITO_APP_CLIENT_ID')
 
 # URL to get Cognito public keys
 keys_url = f'https://cognito-idp.{cognito_region}.amazonaws.com/{user_pool_id}/.well-known/jwks.json'

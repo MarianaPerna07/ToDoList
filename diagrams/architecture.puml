@@ -1,0 +1,98 @@
+@startuml ToDoListArchitecture
+
+' Include AWS Icons from the public repository
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/v18.0/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/AWSSimplified.puml
+!include AWSPuml/ApplicationIntegration/APIGateway.puml
+!include AWSPuml/Compute/EC2.puml
+!include AWSPuml/Compute/EC2Instance.puml
+!include AWSPuml/Groups/AWSCloud.puml
+!include AWSPuml/Groups/VPC.puml
+!include AWSPuml/Groups/AvailabilityZone.puml
+!include AWSPuml/Groups/PublicSubnet.puml
+!include AWSPuml/Groups/PrivateSubnet.puml
+!include AWSPuml/NetworkingContentDelivery/VPCNATGateway.puml
+!include AWSPuml/NetworkingContentDelivery/VPCInternetGateway.puml
+!include AWSPuml/SecurityIdentityCompliance/Cognito.puml
+!include AWSPuml/General/Users.puml
+!include AWSPuml/Groups/Region.puml
+!include AWSPuml/NetworkingContentDelivery/ElasticLoadBalancingApplicationLoadBalancer.puml
+!include AWSPuml/Database/RDS.puml
+!include AWSPuml/NetworkingContentDelivery/CloudFront.puml
+
+' Hide stereotypes and use orthogonal line connections
+hide stereotype
+skinparam linetype ortho
+
+actor "User" as user #Transparent
+
+AWSCloudGroup(cloud, "AWS Cloud") {
+  RegionGroup(region, "Region: eu-north-1 (Stockholm)") {
+    VPCGroup(vpc, "VPC 10.0.0.0/16") {
+      VPCInternetGateway(internet_gateway, "Internet Gateway", "")
+
+      ' Global services
+      CloudFront(cloudfront, "CloudFront\n(Frontend Cache)", "")
+      APIGateway(apigateway, "API Gateway", "")
+      ElasticLoadBalancingApplicationLoadBalancer(alb_frontend, "ALB\nFrontend", "")
+      ElasticLoadBalancingApplicationLoadBalancer(alb_backend, "ALB\nBackend", "")
+      Cognito(cognito, "AWS Cognito", "")
+      RDS(rds_multi_az, "RDS MySQL\nMulti-AZ", "")
+
+      ' Availability Zone 1
+      AvailabilityZoneGroup(az1, "AZ 1") {
+        PublicSubnetGroup(pub_subnet1, "Public Subnet") {
+          EC2Instance(ec2_frontend_1, "Frontend EC2\n(AZ1)", "")
+        }
+        PrivateSubnetGroup(priv_subnet1, "Private Subnet") {
+          EC2Instance(ec2_backend_1, "Backend EC2\n(AZ1)", "")
+        }
+      }
+
+      ' Availability Zone 2
+      AvailabilityZoneGroup(az2, "AZ 2") {
+        PublicSubnetGroup(pub_subnet2, "Public Subnet") {
+          EC2Instance(ec2_frontend_2, "Frontend EC2\n(AZ2)", "")
+        }
+        PrivateSubnetGroup(priv_subnet2, "Private Subnet") {
+          EC2Instance(ec2_backend_2, "Backend EC2\n(AZ2)", "")
+        }
+      }
+
+      ' Availability Zone 3
+      AvailabilityZoneGroup(az3, "AZ 3") {
+        PublicSubnetGroup(pub_subnet3, "Public Subnet") {
+          EC2Instance(ec2_frontend_3, "Frontend EC2\n(AZ3)", "")
+        }
+        PrivateSubnetGroup(priv_subnet3, "Private Subnet") {
+          EC2Instance(ec2_backend_3, "Backend EC2\n(AZ3)", "")
+        }
+      }
+    }
+  }
+}
+
+' Connections with alignment and spacing
+user --> cloudfront : HTTPS
+user --> apigateway : HTTPS
+cloudfront --> alb_frontend : HTTP
+apigateway --> alb_backend : REST API
+
+alb_frontend --> ec2_frontend_1 : Load Balance
+alb_frontend --> ec2_frontend_2 : Load Balance
+alb_frontend --> ec2_frontend_3 : Load Balance
+
+ec2_frontend_1 --> cognito : User Auth
+ec2_frontend_2 --> cognito : User Auth
+ec2_frontend_3 --> cognito : User Auth
+
+alb_backend --> ec2_backend_1
+alb_backend --> ec2_backend_2
+alb_backend --> ec2_backend_3
+
+ec2_backend_1 --> rds_multi_az : Database Access
+ec2_backend_2 --> rds_multi_az : Database Access
+ec2_backend_3 --> rds_multi_az : Database Access
+
+@enduml
