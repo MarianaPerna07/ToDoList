@@ -18,3 +18,4 @@ awscli
 aws-lambda-powertools
 aws-xray-sdk
 mangum
+sqlalchemy-utils
