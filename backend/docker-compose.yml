@@ -1,45 +1,22 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-todolist
-    environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: todolist  
-      MYSQL_USER: mariana
-      MYSQL_PASSWORD: 1234
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "mariana", "--password=1234"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    volumes:
-      - ./mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
-    networks:
-      - backend_network 
-
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: backend
     environment:
-      DB_USER: mariana  
-      DB_PASSWORD: 1234  
-      DB_HOST: mysql-todolist  
-      DB_NAME: todolist  
+      DB_USER: admin
+      DB_PASSWORD: adminpassword
+      DB_HOST: mysql-primary.c3ssy86eav1w.eu-north-1.rds.amazonaws.com
+      DB_NAME: todolist
       DB_PORT: 3306
+      COGNITO_APP_CLIENT_ID: 5hrpiisinpl9tm1319imkstium
+      COGNITO_USERPOOL_ID: eu-north-1_mLBL20tUh
+      COGNITO_DOMAIN: https://my-random-domain.auth.eu-north-1.amazoncognito.com
+      REDIRECT_URI: https://d312q226p1unw8.cloudfront.net/callback
+      COGNITO_APP_CLIENT_SECRET: elhao21uaf4kkol694alpgpa05llcm847o1mj93ss2f1pi0kjpl
+      AWS_REGION: eu-north-1
     ports:
       - "8000:8000"
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - backend_network  
-
-networks:
-  backend_network:
-    driver: bridge
