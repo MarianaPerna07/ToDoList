@@ -9,14 +9,14 @@ services:
     environment:
       DB_USER: admin
       DB_PASSWORD: adminpassword
-      DB_HOST: mysql-primary.c3ssy86eav1w.eu-north-1.rds.amazonaws.com
+      DB_HOST: shdjsakhjsd
       DB_NAME: todolist
       DB_PORT: 3306
-      COGNITO_APP_CLIENT_ID: 5hrpiisinpl9tm1319imkstium
-      COGNITO_USERPOOL_ID: eu-north-1_mLBL20tUh
-      COGNITO_DOMAIN: https://my-random-domain.auth.eu-north-1.amazoncognito.com
-      REDIRECT_URI: https://d312q226p1unw8.cloudfront.net/callback
-      COGNITO_APP_CLIENT_SECRET: elhao21uaf4kkol694alpgpa05llcm847o1mj93ss2f1pi0kjpl
+      COGNITO_APP_CLIENT_ID: scjkds
+      COGNITO_USERPOOL_ID: ahsjkdsahj
+      COGNITO_DOMAIN: jxscndkc
+      REDIRECT_URI: ashdasdjkasd
+      COGNITO_APP_CLIENT_SECRET: hhshsjakssjkd
       AWS_REGION: eu-north-1
     ports:
       - "8000:8000"
