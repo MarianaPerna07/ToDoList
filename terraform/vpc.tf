@@ -37,7 +37,8 @@ resource "aws_route_table" "public" {
 # NAT Gateway Elastic IPs
 resource "aws_eip" "nat" {
   count = 3
-  vpc   = true
+  #vpc   = true
+  depends_on = [aws_internet_gateway.igw]
   tags = {
     Name = "NATGatewayEIP-${count.index + 1}"
   }
@@ -48,6 +49,7 @@ resource "aws_nat_gateway" "nat" {
   count         = 3
   allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.public[count.index].id
+  depends_on = [aws_eip.nat]
   tags = {
     Name = "NATGateway-${count.index + 1}"
   }

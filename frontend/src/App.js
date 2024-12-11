@@ -34,40 +34,9 @@ const App = () => {
 
 
   return (
-    <Authenticator
-      initialState="signIn"
-      components={{
-        SignUp: {
-          FormFields() {
-            return (
-              <>
-                <Authenticator.SignUp.FormFields />
-                <div><label>First name</label></div>
-                <input type="text" name="given_name" placeholder="Please enter your first name" />
-                <div><label>Last name</label></div>
-                <input type="text" name="family_name" placeholder="Please enter your last name" />
-                <div><label>Email</label></div>
-                <input type="text" name="email" placeholder="Please enter a valid email" />
-              </>
-            );
-          },
-        },
-      }}
-      services={{
-        async validateCustomSignUp(formData) {
-          if (!formData.given_name) {
-            return { given_name: 'First Name is required' };
-          }
-          if (!formData.family_name) {
-            return { family_name: 'Last Name is required' };
-          }
-          if (!formData.email) {
-            return { email: 'Email is required' };
-          }
-        },
-      }}
-    >
+    <Authenticator>
       {({ signOut, user }) => {
+        console.log('User object:', user);
         handleUserChange(user); 
         return (
           <>
@@ -85,7 +54,7 @@ const App = () => {
               <Container maxWidth="sm">
                 <Box sx={{ mt: 4 }}>
                   <Typography variant="h4" component="h1" gutterBottom align="center" color="#ffcdb2">
-                    Welcome {user.username} 👋
+                    Welcome {user.signInDetails?.loginId || user.username || 'Guest'} 👋
                   </Typography>
                   <Box display="flex" justifyContent="flex-end" marginRight={3}>
                     <button onClick={signOut}

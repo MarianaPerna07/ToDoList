@@ -38,6 +38,8 @@ function TodoList({ jwtToken }) {
   const [filterOption, setFilterOption] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
 
+  const BASE_URL = "https://c79ypbmfg0.execute-api.eu-north-1.amazonaws.com/";
+
   useEffect(() => {
     if (jwtToken) {
       fetchTasks(jwtToken);
@@ -64,7 +66,7 @@ function TodoList({ jwtToken }) {
 
   const fetchTasks = async (token) => {
     try {
-      const response = await axios.get('http://localhost:8000/tasks/', {
+      const response = await axios.get(`${BASE_URL}tasks/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -107,8 +109,7 @@ function TodoList({ jwtToken }) {
   
       console.log("Adding task with data:", requestData); // Log dos valores antes de enviar
   
-      const response = await axios.post(
-        'http://localhost:8000/tasks/',
+      const response = await axios.post(`${BASE_URL}tasks/`,
         requestData,
         {
           headers: {
@@ -152,8 +153,7 @@ function TodoList({ jwtToken }) {
       console.log("Updating task with ID:", taskId);
       console.log("Task data:", requestData); // Log dos valores antes de enviar
   
-      const response = await axios.put(
-        `http://localhost:8000/tasks/${taskId}`,
+      const response = await axios.put(`${BASE_URL}tasks/${taskId}`,
         requestData,
         {
           headers: { Authorization: `Bearer ${jwtToken}` },
@@ -174,7 +174,7 @@ function TodoList({ jwtToken }) {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/tasks/${id}`, {
+      await axios.delete(`${BASE_URL}tasks/${id}`, {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
       setTasks(tasks.filter((task) => task.id !== id));
@@ -186,8 +186,7 @@ function TodoList({ jwtToken }) {
 
   const toggleCompleted = async (id) => {
     try {
-      const response = await axios.put(
-        `http://localhost:8000/tasks/${id}/toggle`,
+      const response = await axios.put(`${BASE_URL}tasks/${id}/toggle`,
         {},
         {
           headers: { Authorization: `Bearer ${jwtToken}` },

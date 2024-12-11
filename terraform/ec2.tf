@@ -27,7 +27,7 @@ resource "aws_security_group" "ec2" {
 resource "aws_instance" "frontend" {
   count             = 3
   ami               = "ami-08eb150f611ca277f"  # replace with your preferred AMI ID
-  instance_type     = "t3.micro"
+  instance_type     = "t3.xlarge"
   subnet_id         = aws_subnet.public[count.index].id
   key_name          = "ec2-key"
   associate_public_ip_address = true
@@ -37,7 +37,7 @@ resource "aws_instance" "frontend" {
 
   # Define the storage
   root_block_device {
-    volume_size = 8
+    volume_size = 20
     volume_type = "gp2"
   }
 
@@ -49,7 +49,7 @@ resource "aws_instance" "frontend" {
 resource "aws_instance" "backend" {
   count             = 3
   ami               = "ami-08eb150f611ca277f"  # replace with your preferred AMI ID
-  instance_type     = "t3.micro"
+  instance_type     = "t3.xlarge" #t3.micro
   subnet_id         = aws_subnet.private[count.index].id
   key_name          = "ec2-key"
   associate_public_ip_address = false
@@ -59,7 +59,7 @@ resource "aws_instance" "backend" {
 
   # Define the storage
   root_block_device {
-    volume_size = 8
+    volume_size = 20
     volume_type = "gp2"
   }
 

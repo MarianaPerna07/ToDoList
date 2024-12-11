@@ -74,43 +74,10 @@ resource "aws_db_instance" "primary" {
 
   backup_retention_period = 7  # Retain backups for 7 days
   # Enable final snapshot on destroy
-  final_snapshot_identifier = "mysql-primary-final-snapshot"  # Name of the snapshot
-  skip_final_snapshot       = false  # Ensure this is set to false (default)
+  #final_snapshot_identifier = "mysql-primary-final-snapshot"  # Name of the snapshot
+  skip_final_snapshot       = true  # Ensure this is set to false (default)
 
   tags = {
     Name = "MySQLPrimary"
   }
 }
-
-# # Read Replica 1
-# resource "aws_db_instance" "replica_1" {
-#   identifier                = "mysql-replica-1"
-#   engine                    = "mysql"
-#   engine_version            = aws_db_instance.primary.engine_version
-#   instance_class            = aws_db_instance.primary.instance_class
-#   storage_type              = aws_db_instance.primary.storage_type
-#   replicate_source_db       = "mysql-primary"
-#   vpc_security_group_ids    = [aws_security_group.rds.id]
-#   publicly_accessible       = false
-#   allocated_storage         = aws_db_instance.primary.allocated_storage
-#   tags = {
-#     Name = "MySQLReplica1"
-#   }
-# }
-
-# # Read Replica 2
-# resource "aws_db_instance" "replica_2" {
-#   identifier                = "mysql-replica-2"
-#   engine                    = "mysql"
-#   engine_version            = aws_db_instance.primary.engine_version
-#   instance_class            = aws_db_instance.primary.instance_class
-#   storage_type              = aws_db_instance.primary.storage_type
-#   replicate_source_db       = "mysql-primary"
-#   vpc_security_group_ids    = [aws_security_group.rds.id]
-#   publicly_accessible       = false
-#   allocated_storage         = aws_db_instance.primary.allocated_storage
-#   tags = {
-#     Name = "MySQLReplica2"
-#   }
-# }
-
